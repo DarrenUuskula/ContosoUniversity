@@ -98,3 +98,6 @@ G:\Users\K\source\repos\ContosoUniversityTARpe21\clone tarpe22\ContosoUniversity
 G:\Users\K\source\repos\ContosoUniversityTARpe21\clone tarpe22\ContosoUniversityTARpe22\obj\Debug\net6.0\ContosoUniversity.pdb
 G:\Users\K\source\repos\ContosoUniversityTARpe21\clone tarpe22\ContosoUniversityTARpe22\obj\Debug\net6.0\ContosoUniversity.genruntimeconfig.cache
 G:\Users\K\source\repos\ContosoUniversityTARpe21\clone tarpe22\ContosoUniversityTARpe22\obj\Debug\net6.0\ref\ContosoUniversity.dll
+C:\Users\opilane\Source\Repos\ContosoUniversity\obj\Debug\net6.0\ContosoUniversity.dll
+C:\Users\opilane\Source\Repos\ContosoUniversity\obj\Debug\net6.0\refint\ContosoUniversity.dll
+C:\Users\opilane\Source\Repos\ContosoUniversity\obj\Debug\net6.0\ContosoUniversity.pdb

@@ -1,34 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ContosoUniversity.Models
 {
-    public class Instructor
+    public class InstructorIndexData : Controller
     {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Column("FirstName")]
-        [Display(Name = "First Name")]
-        public string FirstMidName { get; set; }
-
-        [Display(Name = "Full Name")]
-        public string FullName 
-        { 
-            get { return LastName + ", " + FirstMidName; } 
-        }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Hire Date")]
-        public DateTime HireDate { get; set; }
-
-        public ICollection<CourseAssignment>? CourseAssignments { get; set; }
-
-        public OfficeAssignment? OfficeAssignment { get; set; }
+        public IEnumerable<Instructor> Instructors { get; set; }
+        public IEnumerable<Course>? Courses { get; set; }
+        public IEnumerable<Enrollment> Enrollments { get; set; }
     }
 }

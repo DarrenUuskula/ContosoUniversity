@@ -64,39 +64,61 @@ namespace ContosoUniversity.Controllers
         public IActionResult Create()
         {
             var instructor = new Instructor();
-            instructor.CourseAssignments=new List<CourseAssignment>();
+            instructor.CourseAssignments = new List<CourseAssignment>();
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Instructor instructor, string selectedCourses)
+        public async Task<IActionResult> Create([Bind("HireDate,FirstMidName,LastName")] Instructor instructor)
         {
-            if (selectedCourses == null)
+            try
             {
-                instructor.CourseAssignments = new List<CourseAssignment>();
-                foreach (var course in selectedCourses)
+                if (ModelState.IsValid)
                 {
-                    var courseToAdd = new CourseAssignment
-                    {
-                        InstructorID = instructor.ID,
-                        CourseID = course
-                    };
-                    instructor.CourseAssignments.Add(courseToAdd);
+                    _context.Add(instructor);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
             }
-            if (ModelState.IsValid)
+            catch (DbUpdateException)
             {
-                _context.Add(instructor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "Unable to save changes" +
+                    "Try again, and if the problem persists" +
+                    "see your system administrator");
             }
-            PopulateAssignedCourseData(instructor);
             return View(instructor);
         }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(Instructor instructor, string selectedCourses)
+        //{
+        //    if (selectedCourses == null)
+        //    {
+        //        instructor.CourseAssignments = new List<CourseAssignment>();
+        //        foreach (var course in selectedCourses)
+        //        {
+        //            var courseToAdd = new CourseAssignment
+        //            {
+        //                InstructorID = instructor.ID,
+        //                CourseID = course
+        //            };
+        //            instructor.CourseAssignments.Add(courseToAdd);
+        //        }
+        //    }
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(instructor);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    PopulateAssignedCourseData(instructor);
+        //    return View(instructor);
+        //}
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) 
+            if (id == null)
             {
                 return NotFound();
             }
@@ -154,37 +176,36 @@ namespace ContosoUniversity.Controllers
 
             return View();
         }
-        [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
+
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var instructor = await _context.Instructors
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-            return View(instructor);
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            Instructor instructor = await _context.Instructors
-                .Include(i => i.CourseAssignments)
-                .SingleAsync(i => i.ID == id);
-            var departments = await _context.Departments
-                .Where(d => d.InstructorID == null)
-                .ToListAsync();
-            departments.ForEach(d => d.InstructorID = null);
-
+            Instructor instructor = await _context.Instructors.FirstOrDefaultAsync(s => s.ID == id);
             _context.Instructors.Remove(instructor);
-
             await _context.SaveChangesAsync();
+
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                    "Delete failed. Try again, and if the problem persists " +
+                    "see your system administrator.";
+            }
             return RedirectToAction(nameof(Index));
+
+            //var student = await _context.Students
+            //    .AsNoTracking()
+            //    .FirstOrDefaultAsync(m => m.ID == id);
+            //if (student == null)
+            //{
+            //    return NotFound();
+            //}
+
+
+            //return View(student);
+
         }
 
         private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
